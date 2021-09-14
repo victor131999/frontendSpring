@@ -7,7 +7,7 @@
                     <v-icon>mdi-account</v-icon>
                 </v-list-item-avatar>
                 <v-list-item-content>
-                  <!--  <v-list-item-title class="text-h7">{{ user}}</v-list-item-title> -->
+                    <v-list-item-title class="text-h7">{{ $store.state.auth.user.userName }}</v-list-item-title>
                     <v-list-item-subtitle class="text-h9">Email</v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
@@ -15,12 +15,12 @@
         </v-list>
         <v-divider></v-divider>
         <v-list nav dense>
-            <!--<v-list-item link :to="{ name: 'products-list'}">
+            <v-list-item link :to="{ name: 'products-list'}">
                 <v-list-item-icon>
                     <v-icon>mdi-bottle-soda-classic-outline</v-icon>
                 </v-list-item-icon>
                 <v-list-item-title>Products</v-list-item-title>
-            </v-list-item>-->
+            </v-list-item>
         </v-list>
         <v-divider></v-divider>
         <template v-slot:append>
@@ -39,14 +39,21 @@ export default {
     name: 'AppNavigation',
     data(){
         return {
-            loggedIn:false,
-            user: null
+            loggedIn:false
         }
     },
     mounted: function () {
+        this.loggedIn = this.$store.state.auth.status.loggedIn
     },
     methods: {
         handleLogOut(){
+            if(this.loggedIn){
+                this.$store.dispatch('auth/logout').then(
+                    ()=>{
+                        console.log('logout')
+                    }
+                )
+            }
         }
     }
 }

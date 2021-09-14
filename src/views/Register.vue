@@ -60,7 +60,8 @@
                                 </v-card-text>
                                 <v-divider></v-divider>
                                 <v-card-actions>
-                                    <v-spacer>                                    </v-spacer>
+                                    <v-spacer>      
+                                    <v-btn @click="handleExitRegister" text>Entrar</v-btn>                              </v-spacer>
                                     <v-btn @click="handleRegister" color="primary">Registrar</v-btn>
                                 </v-card-actions>
                             </v-card>
@@ -92,6 +93,9 @@ export default {
     methods: {
         handleRegister(){
           AuthService.register(this.user);
+        },
+        handleExitRegister(){
+            this.$store.dispatch('closeRegisterAction');
         },
     }
 }

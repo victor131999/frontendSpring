@@ -1,16 +1,20 @@
 <template>
     <v-app>
         <v-main transition="slide-x-transition">
-
-            <div >
+            <div v-if="$store.state.auth.status.loggedIn ">
+                <Home/>   
+            </div>
+            <div  v-if="(!$store.state.auth.status.loggedIn) && !$store.state.isRegisterOpen ">
                 <Login/>
             </div>
-            <div >
+            <div v-if="(!$store.state.auth.status.loggedIn) && $store.state.isRegisterOpen">
                 <Register/>
             </div>
-            <div >
-                <Matricula/>
-            </div>
+            
+
+
+
+            
         </v-main>
       
     </v-app>
@@ -19,17 +23,17 @@
 <script>
 import Login from './views/Login.vue'
 import Register from './views/Register.vue'
-import Matricula from './views/Matricula.vue'
+import Home from './views/Home.vue'
 export default {
     data(){
         return {
         }
     },
     name: 'App', 
-    components: {
+    components: { 
         Login, 
         Register,
-        Matricula
+        Home,
     }, 
     mounted:function(){
     }

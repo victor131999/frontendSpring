@@ -42,7 +42,8 @@
                                             class="input"
                                                 v-model="user.password"
                                                 outlined
-                                                label="Contraseña"
+                                                label="Correo"
+                                                @input="updateStrength"
                                                 :strength="pswd_strength"
                                             />
                                 
@@ -53,6 +54,7 @@
                                 <v-divider></v-divider>
                                 <v-card-actions>
                                         <v-spacer></v-spacer>
+                                        <v-btn @click="handleEnterRegister" text>Registrarse</v-btn>
                                         <v-btn @click="handleLogin" color="primary">Entrar</v-btn>
                                 
                                 </v-card-actions>
@@ -67,7 +69,6 @@
 <script>
 import User from '../models/user';
 import VuePassword from 'vue-password';
-import AuthService from '../api/auth_service.js';
 export default {
     name: 'Login',
     components: {
@@ -96,9 +97,38 @@ export default {
         handleLogin(){
             this.loading = true;
             if(this.user.username && this.user.password){
-                AuthService.login(this.user);
+            
+                this.$store.dispatch('auth/login', this.user).then(
+                    ()=>{
+                        
+                    },
+                    res=>{
+                        console.log(res.data)
+                    },
+                    error => {
+                        console.warn(error)
+                        this.loading = false;
+                        this.message = (error.response && error.response.data)|| error.message || error.toString();
+                    }
+                )
             }
         },
+        handleEnterRegister(){
+            this.$store.dispatch('openRegisterAction');
+        },
+        updateStrength(password){
+            const containsUppercase = /[A-Z]/.test(password)
+            const containsLowercase = /[a-z]/.test(password)
+            const containsNumber = /[0-9]/.test(password)
+            const containsSpecial = /[#?!@$%^&*-]/.test(password)
+            const containsLenght = password.length>10?true:false;
+            if(password.length == 0 ) this.pswd_strength = 0;
+            if(containsUppercase||containsLowercase||containsNumber) this.pswd_strength = 1;
+            if((containsUppercase||containsLowercase||containsNumber)&&containsLenght) this.pswd_strength = 2;
+            if(containsNumber&&containsUppercase&&containsLowercase) this.pswd_strength = 3;
+            if(containsNumber&&containsUppercase&&containsLowercase&&containsSpecial&&containsLenght) this.pswd_strength = 4;
+
+        }
     }
 }
 </script>
