@@ -8,6 +8,7 @@ import VueAxios from 'vue-axios';
 import Vuelidate from 'vuelidate';
 import '@babel/polyfill';
 import Swal from 'sweetalert2'
+import VueSweetalert2 from 'vue-sweetalert2';
 
 const Toast = Swal.mixin({
     toast:true,
@@ -57,6 +58,8 @@ axios.interceptors.response.use(
     }
 )
 Vue.use(Vuelidate);
+Vue.use(VueSweetalert2);
+
 axios.interceptors.response
 Vue.use(VueAxios, axios);
 

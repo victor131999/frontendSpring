@@ -136,9 +136,7 @@ export default {
             defaultItem: new Product('', '', '')
         }
     },
-    mounted: function(){
-        this.initialize()
-    },
+
     computed:{
         formTitle(){
             return this.editedIndex === -1 ? 'Nueva matrícula': 'Editar matricula'
@@ -154,13 +152,9 @@ export default {
         },  
         
     },
-    created(){
-        this.initialize();
-    },
+
     methods:{
-        initialize(){
-           // ProductsService.getProducts().then(res=>this.data = res.data)
-        },
+
         editItem(item){
             console.log(item)
             this.editedItem = item
@@ -184,8 +178,10 @@ export default {
         save(){
                 ProductsService.createProduct(this.editedItem).then(
                     (res)=>{
-                        this.initialize()
+                        this.$swal('Bien', 'Se ha matriculado correctamente', 'OK');  
+
                         console.warn(res.data)
+                        
                     }
                 ).catch(
                     (err)=>console.warn(err.response))
