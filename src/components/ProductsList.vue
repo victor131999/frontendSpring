@@ -12,7 +12,7 @@
         
             <template v-slot:top>
                 <v-toolbar flat>
-                    <v-toolbar-title>Products</v-toolbar-title>
+                    <v-toolbar-title>Matriculas</v-toolbar-title>
                     <v-divider
                         class="mx-4"
                         inset
@@ -43,60 +43,23 @@
                                         <v-col
                                         >
                                             <v-text-field
-                                                v-model="editedItem.Name"
-                                                label="Nombre"
+                                                v-model="editedItem.cedula_persona"
+                                                label="Cedula"
                                                 required
                                             ></v-text-field>
                                         </v-col>
                                         
                                     </v-row>
                                     <v-row>
-                                        <v-col
-                                        >
-                                            <v-text-field
-                                                v-model="editedItem.Price"
-                                                label="Precio"
-                                                prefix="$"
-                                                required
-                                                type="numeric"
-                                            ></v-text-field>
-                                        </v-col>
-                                        <v-col
-                                        >
-                                            <v-text-field
-                                                v-model="editedItem.Stock"
-                                                label="Stock"
-                                                type="number"
-                                            ></v-text-field>
-                                            <v-slider
-                                                v-model="editedItem.Stock"
-                                                color="black"
-                                                label="Stock"
-                                                min="1"
-                                                max="200"
-                                                thumb-label
-                                            >
-                                            </v-slider>
-                                        </v-col>
-                                        <v-col
-                                        >
-                                            <v-text-field
-                                                v-model="editedItem.Weight"
-                                                label="Peso"
-                                                suffix="kg"
-                                                required
-                                                type="numeric"
-                                            ></v-text-field>
-                                        </v-col>
                                     </v-row>
                                     <v-row>
                                         <v-col
                                         >
-                                            <v-textarea
-                                                v-model="editedItem.Details"
-                                                label="Detalles"
+                                            <v-text-field
+                                                v-model="editedItem.nrc_curso"
+                                                label="NRC"
                                                 required
-                                            ></v-textarea>
+                                            ></v-text-field>
                                         </v-col>
                                     </v-row>
                                 </v-container>
@@ -120,20 +83,6 @@
 
                         </v-card>
                     </v-dialog>
-                    <v-dialog v-model="dialogDelete" max-width="500px">
-                        <v-card>
-                            <v-card-title class="text-h5">
-                                ¿Estas seguro de que deseas eliminar este producto?
-                            </v-card-title>
-                            <v-card-actions>
-                                <v-spacer></v-spacer>
-                                <v-btn color="dark" text @click="closeDelete">Cancelar</v-btn>
-                                <v-btn dark @click="deleteItemConfirm">Ok</v-btn>
-
-                            </v-card-actions>
-                        </v-card>
-
-                    </v-dialog>
                 </v-toolbar>
             </template>
             <template v-slot:[`item.actions`]="{ item }">
@@ -153,12 +102,6 @@
                 </v-icon>
             </template>
             <template v-slot:no-data>
-                <v-btn
-                    color="primary"
-                    @click="initialize"
-                >
-                    Reset
-                </v-btn>
             </template>
 
         </v-data-table>
@@ -176,33 +119,21 @@ export default {
             dialogDelete:false,
             headers: [
                 {
-                    text: 'Nombre',
+                    text: 'Cedula',
                     align: 'start',
-                    value: 'Name'
+                    value: 'cedula_persona'
 
                 },
                 {
-                    text: 'Detalles',
-                    value: 'Details'
+                    text: 'NRC',
+                    value: 'nrc_curso'
                 },
-                {
-                    text: 'Precio',
-                    value: 'Price'
-                },
-                {
-                    text: 'Stock',
-                    value: 'Stock'
-                },
-                {
-                    text: 'Actions',
-                    value: 'actions',
-                    sortable: false
-                }
+
             ],
             data: [],
             editedIndex: -1,
-            editedItem: new Product('', '', '', null, null, null),
-            defaultItem: new Product('', '', '', null, null, null)
+            editedItem: new Product('', '', ''),
+            defaultItem: new Product('', '', '')
         }
     },
     mounted: function(){
@@ -210,7 +141,7 @@ export default {
     },
     computed:{
         formTitle(){
-            return this.editedIndex === -1 ? 'Nuevo producto': 'Editar producto'
+            return this.editedIndex === -1 ? 'Nueva matrícula': 'Editar matricula'
         },
         
     },
@@ -220,31 +151,22 @@ export default {
         },
         dialogDelete(val){
             val||this.closeDelete()
-        },           
+        },  
+        
     },
     created(){
         this.initialize();
     },
     methods:{
         initialize(){
-            ProductsService.getProducts().then(res=>this.data = res.data)
+           // ProductsService.getProducts().then(res=>this.data = res.data)
         },
         editItem(item){
             console.log(item)
             this.editedItem = item
             this.dialog = true
         },
-        deleteItem(item){
-            this.editedItem = item
-            this.dialogDelete = true;
-        },
-        deleteItemConfirm(){
-            ProductsService.deleteProduct(this.editedItem.Id).then(resp=>{
-                this.initialize()
-                console.log(resp.data)
-            }).catch(err=>console.log(err.response))
-            this.closeDelete()
-        },
+
         close(){
             this.dialog = false;
             this.$nextTick(()=>{
@@ -260,17 +182,6 @@ export default {
 
         },
         save(){
-            if(this.editedItem.Id!=''){
-                ProductsService.editProduct(this.editedItem).then(
-                    resp=>{
-                        this.initialize()
-                        console.warn(resp.data)
-                    }
-                    ).catch(
-                    (err)=>{
-                        console.warn(err.response)
-                    })
-            }else{
                 ProductsService.createProduct(this.editedItem).then(
                     (res)=>{
                         this.initialize()
@@ -278,7 +189,6 @@ export default {
                     }
                 ).catch(
                     (err)=>console.warn(err.response))
-            }
             this.close()
         }
     }

@@ -19,7 +19,7 @@
                 <v-list-item-icon>
                     <v-icon>mdi-bottle-soda-classic-outline</v-icon>
                 </v-list-item-icon>
-                <v-list-item-title>Products</v-list-item-title>
+                <v-list-item-title>Matriculas</v-list-item-title>
             </v-list-item>
         </v-list>
         <v-divider></v-divider>
